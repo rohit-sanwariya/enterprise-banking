@@ -25,3 +25,17 @@ def test_create_customer():
 
     # String representation
     assert str(customer) == "CUST001 - Rohit Samaria"
+
+
+@pytest.mark.django_db
+def test_update_customer():
+    customer = CustomerModel.objects.create(
+        customer_number="CUST001",
+        first_name="Rohit",
+        last_name="Samaria",
+        email="rohitsanwariya1995@gmail.com",
+    )
+
+    customer.customer_number = "CUST002"
+
+    customer.save()
