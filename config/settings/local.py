@@ -1,7 +1,7 @@
 # config/settings/local.py
 import environ
 
-from .base import BASE_DIR, LOGGING
+from .base import *
 
 # Initialize environ
 env = environ.Env()

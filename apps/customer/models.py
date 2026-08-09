@@ -1,3 +1,3 @@
-from .infrastructure.models.cutomer_model import CustomerModel
+from .infrastructure.models.customer_model import CustomerModel
 
-__all__ = [CustomerModel]
+__all__ = ["CustomerModel"]
