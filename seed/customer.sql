@@ -1,0 +1,61 @@
+-- ============================================================
+-- Customer seed data
+-- ============================================================
+
+INSERT INTO customer.customer (
+    id,
+    customer_number,
+    customer_type,
+    first_name,
+    last_name,
+    middle_name,
+    date_of_birth,
+    email,
+    phone_number,
+    status,
+    created_at,
+    updated_at
+)
+VALUES
+(
+    gen_random_uuid(),
+    'CUS000001',
+    'INDIVIDUAL',
+    'Rohit',
+    'Sharma',
+    NULL,
+    '1995-05-15',
+    'rohit.sharma@example.com',
+    '+919876543210',
+    'ACTIVE',
+    NOW(),
+    NOW()
+),
+(
+    gen_random_uuid(),
+    'CUS000002',
+    'INDIVIDUAL',
+    'Amit',
+    'Verma',
+    'Kumar',
+    '1992-08-20',
+    'amit.verma@example.com',
+    '+919812345678',
+    'ACTIVE',
+    NOW(),
+    NOW()
+),
+(
+    gen_random_uuid(),
+    'CUS000003',
+    'INDIVIDUAL',
+    'Priya',
+    'Patel',
+    NULL,
+    '1998-11-10',
+    'priya.patel@example.com',
+    '+919998887776',
+    'ACTIVE',
+    NOW(),
+    NOW()
+);

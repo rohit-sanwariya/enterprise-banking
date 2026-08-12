@@ -1,7 +1,7 @@
 from django.apps import AppConfig
 
 
-class CustomerConfig(AppConfig):
+class AccountsConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "apps.customer"
-    label = "customer"
+    name = "apps.accounts"
+    label = "accounts"
