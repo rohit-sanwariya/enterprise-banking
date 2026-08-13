@@ -1,5 +1,7 @@
 import uuid
+from collections.abc import Sequence
 from enum import Enum
+from typing import Any
 
 from django.db import models
 
@@ -8,6 +10,10 @@ from django.db import models
 class AccountType(Enum):
     SAVINGS = "SAVINGS"
     CURRENT = "CURRENT"
+
+    @classmethod
+    def choices(cls) -> Sequence[Any]:
+        return [(tag.value, tag.value.title()) for tag in cls]
 
 
 class AccountStatus(Enum):
@@ -37,7 +43,7 @@ class Account(models.Model):
 
     account_type = models.CharField(
         max_length=20,
-        choices=[(tag.value, tag.value.title()) for tag in AccountType],
+        choices=AccountType.choices(),
     )
 
     status = models.CharField(

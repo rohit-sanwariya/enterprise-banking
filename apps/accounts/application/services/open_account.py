@@ -1,5 +1,3 @@
-from uuid import UUID
-
 from django.db import transaction
 
 from apps.accounts.domain.account_number import generate_account_number
@@ -12,12 +10,12 @@ class OpenAccountService:
     @transaction.atomic
     def execute(
         *,
-        customer_id: UUID,
+        customer_number: str,
         account_type: str,
         currency: str = "INR",
     ) -> Account:
         customer = Customer.objects.get(
-            id=customer_id,
+            customer_number=customer_number,
             status="ACTIVE",
         )
 

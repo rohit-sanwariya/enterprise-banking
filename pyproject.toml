@@ -9,6 +9,7 @@ dependencies = [
     "django-environ>=0.14.0",
     "django-filter>=26.1",
     "djangorestframework>=3.17.1",
+    "djangorestframework-stubs>=3.18.0",
     "drf-spectacular>=0.30.0",
     "phonenumbers>=9.0.36",
     "phonenumberslite>=9.0.36",
