@@ -77,6 +77,12 @@ class Account(models.Model):
     class Meta:
         db_table = '"accounts"."account"'
         ordering = ["-created_at"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["customer", "account_type"],
+                name="uq_account_customer_type",
+            ),
+        ]
 
     def __str__(self) -> str:
         return self.account_number
