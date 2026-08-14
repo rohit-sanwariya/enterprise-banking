@@ -2,6 +2,9 @@ from django.db import transaction
 
 from apps.accounts.domain.account_number import generate_account_number
 from apps.accounts.domain.exceptions.account_exists import AccountAlreadyExistsError
+from apps.accounts.domain.exceptions.customer_does_not_exist import (
+    CustomerNotFoundError,
+)
 from apps.accounts.models import Account
 from apps.customer.models import Customer
 
@@ -15,10 +18,10 @@ class OpenAccountService:
         account_type: str,
         currency: str = "INR",
     ) -> Account:
-        customer = Customer.objects.get(
-            customer_number=customer_number,
-            status="ACTIVE",
-        )
+        try:
+            customer = Customer.objects.get(account_number=customer_number)
+        except Customer.DoesNotExist as err:
+            raise CustomerNotFoundError(f"{customer_number} does not exist") from err
 
         if Account.objects.filter(
             customer=customer,
