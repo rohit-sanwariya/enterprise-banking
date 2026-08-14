@@ -5,6 +5,9 @@ from rest_framework.views import APIView
 from apps.accounts.api.serializers import OpenAccountSerializer
 from apps.accounts.application.services.open_account import OpenAccountService
 from apps.accounts.domain.exceptions.account_exists import AccountAlreadyExistsError
+from apps.accounts.domain.exceptions.customer_does_not_exist import (
+    CustomerNotFoundError,
+)
 
 
 class OpenAccountView(APIView):
@@ -16,14 +19,22 @@ class OpenAccountView(APIView):
             account = OpenAccountService.execute(
                 **serializer.validated_data,
             )
-        except AccountAlreadyExistsError as e:
-            return Response({"detail": str(e)}, status=status.HTTP_409_CONFLICT)
+        except CustomerNotFoundError as exc:
+            return Response(
+                {"detail": str(exc)},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        except AccountAlreadyExistsError as exc:
+            return Response(
+                {"detail": str(exc)},
+                status=status.HTTP_409_CONFLICT,
+            )
 
         return Response(
             {
-                "id": account.id,
+                "id": str(account.id),
                 "account_number": account.account_number,
-                "customer_id": account.customer.customer_id,
+                "customer_number": account.customer.customer_number,
                 "account_type": account.account_type,
                 "status": account.status,
                 "currency": account.currency,

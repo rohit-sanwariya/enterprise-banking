@@ -19,7 +19,9 @@ class OpenAccountService:
         currency: str = "INR",
     ) -> Account:
         try:
-            customer = Customer.objects.get(account_number=customer_number)
+            customer = Customer.objects.get(
+                customer_number=customer_number,
+            )
         except Customer.DoesNotExist as err:
             raise CustomerNotFoundError(f"{customer_number} does not exist") from err
 
