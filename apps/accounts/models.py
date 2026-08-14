@@ -5,6 +5,8 @@ from typing import Any
 
 from django.db import models
 
+from apps.customer.domain.enums.transaction_type import TransactionType
+
 
 # Standard Python Enums
 class AccountType(Enum):
@@ -86,3 +88,35 @@ class Account(models.Model):
 
     def __str__(self) -> str:
         return self.account_number
+
+
+class Transaction(models.Model):
+    account = models.ForeignKey(
+        Account,
+        on_delete=models.PROTECT,
+        related_name="transactions",
+    )
+
+    transaction_type = models.CharField(
+        max_length=10,
+        choices=TransactionType.choices,
+    )
+
+    amount = models.DecimalField(
+        max_digits=19,
+        decimal_places=2,
+    )
+
+    balance_after = models.DecimalField(
+        max_digits=19,
+        decimal_places=2,
+    )
+
+    reference = models.CharField(
+        max_length=100,
+        unique=True,
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+    )
