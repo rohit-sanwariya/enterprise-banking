@@ -4,6 +4,7 @@ from enum import Enum
 from typing import Any
 
 from django.db import models
+from django.db.models import Q
 
 from apps.customer.domain.enums.transaction_type import TransactionType
 
@@ -36,7 +37,6 @@ class Account(models.Model):
         unique=True,
     )
 
-    # References Customer model in the customer app
     customer = models.ForeignKey(
         "customer.Customer",
         on_delete=models.PROTECT,
@@ -57,6 +57,12 @@ class Account(models.Model):
     currency = models.CharField(
         max_length=3,
         default="INR",
+    )
+
+    balance = models.DecimalField(
+        max_digits=19,
+        decimal_places=2,
+        default=0,
     )
 
     opened_at = models.DateTimeField(
@@ -83,6 +89,10 @@ class Account(models.Model):
             models.UniqueConstraint(
                 fields=["customer", "account_type"],
                 name="uq_account_customer_type",
+            ),
+            models.CheckConstraint(
+                condition=Q(balance__gte=0),
+                name="account_balance_non_negative",
             ),
         ]
 
@@ -120,3 +130,16 @@ class Transaction(models.Model):
     created_at = models.DateTimeField(
         auto_now_add=True,
     )
+
+    class Meta:
+        db_table = '"accounts"."transaction"'
+        constraints = [
+            models.CheckConstraint(
+                condition=Q(amount__gt=0),
+                name="transaction_amount_positive",
+            ),
+            models.CheckConstraint(
+                condition=Q(balance_after__gte=0),
+                name="transaction_balance_after_non_negative",
+            ),
+        ]

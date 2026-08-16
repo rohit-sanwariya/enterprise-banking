@@ -24,6 +24,27 @@ services:
       timeout: 5s
       retries: 5
 
+    networks:
+      - banking
+
+  migrate:
+    build: .
+    command: uv run python manage.py migrate
+
+    env_file:
+      - .env.docker
+
+    volumes:
+      - .:/app
+      - docker_venv:/app/.venv
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    networks:
+      - banking
+
   web:
     build: .
     command: uv run python manage.py runserver 0.0.0.0:8000
@@ -38,17 +59,16 @@ services:
     ports:
       - "8000:8000"
 
-    environment:
-      DATABASE_HOST: postgres
-      DATABASE_PORT: 5432
-      DATABASE_NAME: banking
-      DATABASE_USER: postgres
-      DATABASE_PASSWORD: postgres
-
     depends_on:
-      postgres:
-        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+    networks:
+      - banking
 
 volumes:
   postgres_data:
   docker_venv:
+
+networks:
+  banking:
