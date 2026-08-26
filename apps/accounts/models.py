@@ -101,6 +101,9 @@ class Account(models.Model):
 
 
 class Transaction(models.Model):
+    id = models.BigAutoField(
+        primary_key=True,
+    )
     account = models.ForeignKey(
         Account,
         on_delete=models.PROTECT,

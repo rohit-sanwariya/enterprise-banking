@@ -2,15 +2,26 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.customer.api.serializers import CreateCustomerSerializer
+from apps.customer.api.serializers import CustomerSerializer
 from apps.customer.application.services.create_customer import (
     CreateCustomerService,
 )
+from apps.customer.models import Customer
 
 
-class CreateCustomerView(APIView):
+class CustomerView(APIView):
+    def get(self, request):
+        customers = Customer.objects.all()
+
+        serializer = CustomerSerializer(
+            customers,
+            many=True,
+        )
+
+        return Response(serializer.data)
+
     def post(self, request):
-        serializer = CreateCustomerSerializer(data=request.data)
+        serializer = CustomerSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         customer = CreateCustomerService.execute(

@@ -3,7 +3,7 @@ from rest_framework import serializers
 from apps.customer.models import Customer
 
 
-class CreateCustomerSerializer(serializers.ModelSerializer):
+class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = [

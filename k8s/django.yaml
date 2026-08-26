@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Pod
+
+metadata:
+  name: django
+  namespace: default
+
+spec:
+  containers:
+    - name: django
+      image: enterprise-banking:local
+      imagePullPolicy: IfNotPresent
+
+      command:
+        - uv
+        - run
+        - python
+        - manage.py
+        - runserver
+        - 0.0.0.0:8000
+
+      env:
+        - name: DJANGO_SECRET_KEY
+          value: "28^)8%w&#x1sw4ohsyjs-27j7bm&)&m#39i&v*cdgns+*_b)-4"
+
+        - name: DATABASE_URL
+          value: "postgres://postgres:postgres@postgres.database:5432/banking"
+
+      ports:
+        - containerPort: 8000
