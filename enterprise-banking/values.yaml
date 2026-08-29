@@ -1,0 +1,16 @@
+image:
+  repository: enterprise-banking
+  tag: local
+  pullPolicy: IfNotPresent
+
+django:
+  secretKey: "28^)8%w&#x1sw4ohsyjs-27j7bm&)&m#39i&v*cdgns+*_b)-4"
+
+postgres:
+  image:
+    repository: postgres
+    tag: 16-alpine
+
+  database: banking
+  username: postgres
+  password: postgres

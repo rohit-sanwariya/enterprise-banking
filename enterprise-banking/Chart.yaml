@@ -1,0 +1,6 @@
+apiVersion: v2
+name: enterprise-banking
+description: Helm chart for the enterprise-banking application
+type: application
+version: 0.1.0
+appVersion: "local"

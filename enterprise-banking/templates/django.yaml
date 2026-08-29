@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+
+metadata:
+  name: django
+
+spec:
+  containers:
+    - name: django
+      image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+      imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+      command:
+        - uv
+        - run
+        - python
+        - manage.py
+        - runserver
+        - 0.0.0.0:8000
+
+      env:
+        - name: DJANGO_SECRET_KEY
+          value: "{{ .Values.django.secretKey }}"
+
+        - name: DATABASE_URL
+          value: "postgres://{{ .Values.postgres.username }}:{{ .Values.postgres.password }}@postgres.database:5432/{{ .Values.postgres.database }}"
+
+      ports:
+        - containerPort: 8000
