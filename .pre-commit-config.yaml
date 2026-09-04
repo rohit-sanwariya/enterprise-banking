@@ -6,3 +6,12 @@ repos:
         args: [--fix]
 
       - id: ruff-format
+
+  - repo: local
+    hooks:
+      - id: helm-lint
+        name: Helm lint
+        entry: helm lint enterprise-banking
+        language: system
+        pass_filenames: false
+        files: ^enterprise-banking/
