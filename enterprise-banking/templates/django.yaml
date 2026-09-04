@@ -23,7 +23,7 @@ spec:
           value: "{{ .Values.django.secretKey }}"
 
         - name: DATABASE_URL
-          value: "postgres://{{ .Values.postgres.username }}:{{ .Values.postgres.password }}@postgres.database:5432/{{ .Values.postgres.database }}"
+          value: "postgres://{{ .Values.postgres.username }}:{{ .Values.postgres.password }}@postgres.database:5432/{{ .Values.postgres }}"
 
       ports:
         - containerPort: 8000
