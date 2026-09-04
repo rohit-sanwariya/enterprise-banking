@@ -8,9 +8,13 @@ from apps.accounts.domain.exceptions.account_exists import AccountAlreadyExistsE
 from apps.accounts.domain.exceptions.customer_does_not_exist import (
     CustomerNotFoundError,
 )
+from apps.accounts.models import Account
 
 
 class OpenAccountView(APIView):
+    serializer_class = OpenAccountSerializer
+    queryset = Account.objects.all()
+
     def post(self, request):
         serializer = OpenAccountSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

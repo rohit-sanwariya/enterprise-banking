@@ -14,6 +14,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
+    "drf_spectacular",
+    "django_filters",
     "apps.customer",
     "apps.accounts",
 ]
@@ -125,4 +128,23 @@ LOGGING = {
             "propagate": False,
         },
     },
+}
+
+
+REST_FRAMEWORK = {
+    # Schema generator for Swagger / OpenAPI
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    # Allows full access without authentication headers or tokens
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",
+    ],
+    # Enables the interactive HTML Browsable API in the browser
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+        "rest_framework.renderers.BrowsableAPIRenderer",
+    ],
+    # Basic session auth for the browsable API login button
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+    ],
 }

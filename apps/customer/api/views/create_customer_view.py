@@ -1,3 +1,5 @@
+import logging
+
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -8,11 +10,16 @@ from apps.customer.application.services.create_customer import (
 )
 from apps.customer.models import Customer
 
+logger = logging.getLogger(__name__)
+
 
 class CustomerView(APIView):
+    serializer = CustomerSerializer
+    queryset = Customer.objects.all()
+
     def get(self, request):
         customers = Customer.objects.all()
-
+        logger.info(self.queryset.values())
         serializer = CustomerSerializer(
             customers,
             many=True,

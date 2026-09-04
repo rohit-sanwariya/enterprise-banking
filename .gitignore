@@ -89,8 +89,7 @@ dmypy.json
 # Pyre
 .pyre/
 
-# uv
-uv.lock
+
 
 # Logs
 logs/
