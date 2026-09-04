@@ -1,6 +1,6 @@
 image:
-  repository: rohitsanwariya/enterprise-banking:stable
-  tag: local
+  repository: rohitsanwariya/enterprise-banking
+  tag: stable
   pullPolicy: IfNotPresent
 
 django:
