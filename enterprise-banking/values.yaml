@@ -1,5 +1,5 @@
 image:
-  repository: enterprise-banking
+  repository: rohitsanwariya/enterprise-banking:stable
   tag: local
   pullPolicy: IfNotPresent
 
