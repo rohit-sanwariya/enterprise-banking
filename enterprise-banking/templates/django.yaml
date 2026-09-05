@@ -1,29 +1,38 @@
-apiVersion: v1
-kind: Pod
-
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: django
-
+  name: django-deployment
+  labels:
+    app: django
 spec:
-  containers:
-    - name: django
-      image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-      imagePullPolicy: {{ .Values.image.pullPolicy }}
-
-      command:
-        - uv
-        - run
-        - python
-        - manage.py
-        - runserver
-        - 0.0.0.0:8000
-
-      env:
-        - name: DJANGO_SECRET_KEY
-          value: "{{ .Values.django.secretKey }}"
-
-        - name: DATABASE_URL
-          value: "postgres://{{ .Values.postgres.username }}:{{ .Values.postgres.password }}@postgres:5432/{{ .Values.postgres.database }}"
-
-      ports:
-        - containerPort: 8000
+  replicas: 2
+  selector:
+    matchLabels:
+      app: django
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: django
+    spec:
+      containers:
+        - name: django
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - uv
+            - run
+            - manage.py
+            - runserver
+            - 0.0.0.0:8000
+          env:
+            - name: DJANGO_SECRET_KEY
+              value: "{{ .Values.django.secretKey }}"
+            - name: DATABASE_URL
+              value: "postgres://{{ .Values.postgres.username }}:{{ .Values.postgres.password }}@postgres:5432/{{ .Values.postgres.database }}"
+          ports:
+            - containerPort: 8000
