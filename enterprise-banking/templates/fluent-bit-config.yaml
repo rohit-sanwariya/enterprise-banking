@@ -1,0 +1,35 @@
+{{- if and .Values.fluentBit.enabled (not .Values.logging.enabled) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluent-bit-config
+data:
+  fluent-bit.conf: |
+    [SERVICE]
+        Daemon              Off
+        Flush               1
+        Log_Level           {{ .Values.fluentBit.logLevel | default "info" }}
+        Parsers_File        parsers.conf
+
+    [INPUT]
+        Name                tail
+        Path                /var/log/containers/*.log
+        Exclude_Path        /var/log/containers/fluent-bit*.log
+        Parser              cri
+        Tag                 kube.*
+        Mem_Buf_Limit       10MB
+        Skip_Long_Lines     On
+        DB                  /var/lib/fluent-bit/pos.db
+
+    [OUTPUT]
+        Name                stdout
+        Match               *
+
+  parsers.conf: |
+    [PARSER]
+        Name                cri
+        Format              regex
+        Regex               ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>[^ ]*) (?<message>.*)$
+        Time_Key            time
+        Time_Format         %Y-%m-%dT%H:%M:%S.%L%z
+{{- end }}

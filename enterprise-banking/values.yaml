@@ -7,10 +7,74 @@ django:
   secretKey: "28^)8%w&#x1sw4ohsyjs-27j7bm&)&m#39i&v*cdgns+*_b)-4"
 
 postgres:
-  image:
-    repository: postgres
-    tag: 16-alpine
+  enabled: true
+  fullnameOverride: postgres
+  architecture: standalone
+  auth:
+    enablePostgresUser: true
+    postgresPassword: postgres
+    database: banking
+  primary:
+    persistence:
+      enabled: true
+      storageClass: linode-block-storage
+      size: 10Gi
 
-  database: banking
-  username: postgres
-  password: postgres
+fluentBit:
+  enabled: false
+  image:
+    repository: cr.fluentbit.io/fluent/fluent-bit
+    tag: 3.2
+    pullPolicy: IfNotPresent
+
+logging:
+  enabled: true
+
+  filebeat:
+    enabled: true
+    image: docker.elastic.co/beats/filebeat
+    tag: 9.1.2
+
+elasticsearch:
+  fullnameOverride: elasticsearch
+  master:
+    replicaCount: 1
+    heapSize: 512m
+    persistence:
+      enabled: true
+      storageClass: linode-block-storage
+      size: 10Gi
+  data:
+    replicaCount: 0
+  coordinating:
+    replicaCount: 0
+  ingest:
+    enabled: false
+  security:
+    enabled: false
+
+logstash:
+  fullnameOverride: logstash
+  replicaCount: 1
+  input: |-
+    beats {
+      port => 5044
+    }
+  filter: |-
+    if [kubernetes] {
+      mutate {
+        add_field => { "service" => "%{[kubernetes][container][name]}" }
+      }
+    }
+  output: |-
+    elasticsearch {
+      hosts => ["http://elasticsearch:9200"]
+      index => "enterprise-banking-%{+YYYY.MM.dd}"
+    }
+    stdout { codec => rubydebug }
+  service:
+    ports:
+      - name: beats
+        port: 5044
+        targetPort: beats
+        protocol: TCP

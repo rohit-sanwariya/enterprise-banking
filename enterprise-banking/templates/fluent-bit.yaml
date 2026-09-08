@@ -1,0 +1,50 @@
+{{- if and .Values.fluentBit.enabled (not .Values.logging.enabled) }}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluent-bit
+  labels:
+    app: fluent-bit
+spec:
+  selector:
+    matchLabels:
+      app: fluent-bit
+  template:
+    metadata:
+      labels:
+        app: fluent-bit
+    spec:
+      tolerations:
+        - operator: Exists
+      containers:
+        - name: fluent-bit
+          image: "{{ .Values.fluentBit.image.repository }}:{{ .Values.fluentBit.image.tag }}"
+          imagePullPolicy: {{ .Values.fluentBit.image.pullPolicy }}
+          securityContext:
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - name: varlog
+              mountPath: /var/log
+              readOnly: true
+            - name: fluent-bit-state
+              mountPath: /var/lib/fluent-bit
+            - name: config
+              mountPath: /fluent-bit/etc/fluent-bit.conf
+              subPath: fluent-bit.conf
+              readOnly: true
+            - name: config
+              mountPath: /fluent-bit/etc/parsers.conf
+              subPath: parsers.conf
+              readOnly: true
+      volumes:
+        - name: varlog
+          hostPath:
+            path: /var/log
+        - name: fluent-bit-state
+          hostPath:
+            path: /var/lib/fluent-bit
+            type: DirectoryOrCreate
+        - name: config
+          configMap:
+            name: fluent-bit-config
+{{- end }}

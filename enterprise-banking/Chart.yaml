@@ -4,3 +4,18 @@ description: Helm chart for the enterprise-banking application
 type: application
 version: 0.1.0
 appVersion: "local"
+
+dependencies:
+  - name: elasticsearch
+    version: 22.1.6
+    repository: https://charts.bitnami.com/bitnami
+    condition: logging.enabled
+  - name: logstash
+    version: 7.0.11
+    repository: https://charts.bitnami.com/bitnami
+    condition: logging.enabled
+  - name: postgresql
+    alias: postgres
+    version: 18.8.17
+    repository: https://charts.bitnami.com/bitnami
+    condition: postgres.enabled
