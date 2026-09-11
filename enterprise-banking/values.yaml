@@ -1,7 +1,7 @@
 image:
   repository: rohitsanwariya/enterprise-banking
   tag: latest
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 django:
   secretKey: "28^)8%w&#x1sw4ohsyjs-27j7bm&)&m#39i&v*cdgns+*_b)-4"
