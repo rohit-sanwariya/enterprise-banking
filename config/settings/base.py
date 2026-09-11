@@ -87,7 +87,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-# Logging configuration — common across all environments
+# Logging configuration — commontrash across all environments
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,

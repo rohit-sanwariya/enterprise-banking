@@ -1,8 +1,9 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 
-from apps.accounts.api.serializers import OpenAccountSerializer
+import apps.accounts.api.serializers
 from apps.accounts.application.services.open_account import OpenAccountService
 from apps.accounts.domain.exceptions.account_exists import AccountAlreadyExistsError
 from apps.accounts.domain.exceptions.customer_does_not_exist import (
@@ -12,11 +13,13 @@ from apps.accounts.models import Account
 
 
 class OpenAccountView(APIView):
-    serializer_class = OpenAccountSerializer
+    serializer_class = apps.accounts.api.serializers.OpenAccountSerializer
     queryset = Account.objects.all()
 
     def post(self, request):
-        serializer = OpenAccountSerializer(data=request.data)
+        serializer = apps.accounts.api.serializers.OpenAccountSerializer(
+            data=request.data
+        )
         serializer.is_valid(raise_exception=True)
 
         try:
@@ -46,3 +49,8 @@ class OpenAccountView(APIView):
             },
             status=status.HTTP_201_CREATED,
         )
+
+
+class AccountViewSet(ModelViewSet):
+    queryset = Account.objects.all()
+    serializer_class = apps.accounts.api.serializers.AccountSerializer

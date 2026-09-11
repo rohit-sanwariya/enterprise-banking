@@ -1,7 +1,11 @@
-from django.urls import path
+# apps/accounts/api/urls.py
 
-from apps.accounts.views import OpenAccountView
+from rest_framework.routers import DefaultRouter
 
-urlpatterns = [
-    path("", OpenAccountView.as_view(), name="open-account"),
-]
+from apps.accounts.views import AccountViewSet
+
+router = DefaultRouter()
+
+router.register("accounts", AccountViewSet, basename="account")
+
+urlpatterns = router.urls

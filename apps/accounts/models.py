@@ -6,6 +6,7 @@ from typing import Any
 from django.db import models
 from django.db.models import Q
 
+from apps.common.models import TimestampModel, TrashModel
 from apps.customer.domain.enums.transaction_type import TransactionType
 
 
@@ -25,7 +26,7 @@ class AccountStatus(Enum):
     CLOSED = "CLOSED"
 
 
-class Account(models.Model):
+class Account(TrashModel, TimestampModel):
     id = models.UUIDField(
         primary_key=True,
         default=uuid.uuid4,
@@ -74,13 +75,7 @@ class Account(models.Model):
         blank=True,
     )
 
-    created_at = models.DateTimeField(
-        auto_now_add=True,
-    )
-
-    updated_at = models.DateTimeField(
-        auto_now=True,
-    )
+    is_deleted = models.BooleanField(default=False)
 
     class Meta:
         db_table = '"accounts"."account"'
