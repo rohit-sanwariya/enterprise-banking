@@ -1,12 +1,12 @@
 dependencies:
 - name: elasticsearch
-  repository: https://charts.bitnami.com/bitnami
-  version: 22.1.6
+  repository: https://helm.elastic.co
+  version: 7.17.3
 - name: logstash
-  repository: https://charts.bitnami.com/bitnami
-  version: 7.0.11
+  repository: https://helm.elastic.co
+  version: 7.17.3
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
   version: 18.8.17
-digest: sha256:1cc41665774d35321c126dd346a70c716b5f77f97775041d9f7a35998492eee6
-generated: "2026-09-07T20:51:07.1424656+05:30"
+digest: sha256:7e467b43d5674e264ddf43ef84efd312fe6a41e3d3a69e36860d3f381343b0d0
+generated: "2026-09-11T22:50:29.7037421+05:30"

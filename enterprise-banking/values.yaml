@@ -37,44 +37,56 @@ logging:
 
 elasticsearch:
   fullnameOverride: elasticsearch
-  master:
-    replicaCount: 1
-    heapSize: 512m
-    persistence:
-      enabled: true
-      storageClass: linode-block-storage
-      size: 10Gi
-  data:
-    replicaCount: 0
-  coordinating:
-    replicaCount: 0
-  ingest:
-    enabled: false
-  security:
-    enabled: false
+  nodeGroup: master
+  replicas: 1
+  minimumMasterNodes: 1
+  roles:
+    master: "true"
+    ingest: "true"
+    data: "true"
+    remote_cluster_client: "true"
+    ml: "false"
+  esJavaOpts: "-Xms512m -Xmx512m"
+  volumeClaimTemplate:
+    storageClassName: linode-block-storage
+    accessModes: ["ReadWriteOnce"]
+    resources:
+      requests:
+        storage: 10Gi
+  persistence:
+    enabled: true
 
 logstash:
   fullnameOverride: logstash
-  replicaCount: 1
-  input: |-
-    beats {
-      port => 5044
-    }
-  filter: |-
-    if [kubernetes] {
-      mutate {
-        add_field => { "service" => "%{[kubernetes][container][name]}" }
+  replicas: 1
+  logstashPipeline:
+    logstash.conf: |-
+      input {
+        beats {
+          port => 5044
+        }
       }
-    }
-  output: |-
-    elasticsearch {
-      hosts => ["http://elasticsearch:9200"]
-      index => "enterprise-banking-%{+YYYY.MM.dd}"
-    }
-    stdout { codec => rubydebug }
+      filter {
+        if [kubernetes] {
+          mutate {
+            add_field => { "service" => "%{[kubernetes][container][name]}" }
+          }
+        }
+      }
+      output {
+        elasticsearch {
+          hosts => ["http://elasticsearch:9200"]
+          index => "enterprise-banking-%{+YYYY.MM.dd}"
+        }
+        stdout { codec => rubydebug }
+      }
+  extraPorts:
+    - name: beats
+      containerPort: 5044
+      protocol: TCP
   service:
     ports:
       - name: beats
         port: 5044
-        targetPort: beats
+        targetPort: 5044
         protocol: TCP

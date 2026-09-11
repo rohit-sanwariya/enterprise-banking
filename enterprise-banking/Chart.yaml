@@ -7,15 +7,15 @@ appVersion: "local"
 
 dependencies:
   - name: elasticsearch
-    version: 22.1.6
-    repository: https://charts.bitnami.com/bitnami
+    version: 7.17.3
+    repository: https://helm.elastic.co
     condition: logging.enabled
   - name: logstash
-    version: 7.0.11
-    repository: https://charts.bitnami.com/bitnami
+    version: 7.17.3
+    repository: https://helm.elastic.co
     condition: logging.enabled
   - name: postgresql
     alias: postgres
     version: 18.8.17
     repository: https://charts.bitnami.com/bitnami
-    condition: postgres.enabled
+    condition: postgres.enabledche
