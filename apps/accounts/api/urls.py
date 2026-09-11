@@ -6,6 +6,6 @@ from apps.accounts.views import AccountViewSet
 
 router = DefaultRouter()
 
-router.register("accounts", AccountViewSet, basename="account")
+router.register("", AccountViewSet, basename="account")
 
 urlpatterns = router.urls
