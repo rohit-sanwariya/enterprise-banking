@@ -23,6 +23,13 @@ class OpenAccountSerializer(serializers.Serializer):
         except AccountAlreadyExistsError as exc:
             raise serializers.ValidationError({"detail": str(exc)}) from None
 
+    def to_representation(self, instance):
+        """
+        Delegates response serialization to AccountSerializer,
+        preventing 'Account object has no attribute customer_number' errors.
+        """
+        return AccountSerializer(instance, context=self.context).data
+
     @staticmethod
     def validate_currency(value: str):
         return value.upper()

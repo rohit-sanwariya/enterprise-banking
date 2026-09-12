@@ -3,6 +3,8 @@ from enum import Enum
 
 from django.db import models
 
+from apps.common.models import TimestampModel, TrashModel
+
 
 # Standard Python Enums
 class CustomerType(Enum):
@@ -18,7 +20,7 @@ class CustomerStatus(Enum):
     DECEASED = "DECEASED"
 
 
-class Customer(models.Model):
+class Customer(TrashModel, TimestampModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     customer_number = models.CharField(max_length=20, unique=True, editable=False)
 
@@ -40,10 +42,6 @@ class Customer(models.Model):
         choices=[(tag.value, tag.value.title()) for tag in CustomerStatus],
         default=CustomerStatus.ACTIVE.value,
     )
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    closed_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         db_table = '"customer"."customer"'

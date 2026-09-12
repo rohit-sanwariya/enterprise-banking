@@ -1,11 +1,9 @@
-from django.urls import path
+# apps/customer/api/urls.py
+from rest_framework.routers import DefaultRouter
 
-from apps.customer.api.views.view import CustomerView
+from apps.customer.api.views import CustomerView
 
-urlpatterns = [
-    path(
-        "",
-        CustomerView.as_view(),
-        name="create-customer",
-    ),
-]
+router = DefaultRouter()
+router.register(r"", CustomerView, basename="customer")
+
+urlpatterns = router.urls

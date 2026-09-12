@@ -1,6 +1,6 @@
 import logging
 
-from rest_framework import generics, status
+from rest_framework import status, viewsets
 from rest_framework.response import Response
 
 from apps.customer.api.serializers import CustomerSerializer
@@ -12,11 +12,12 @@ from apps.customer.models import Customer
 logger = logging.getLogger(__name__)
 
 
-class CustomerView(generics.ListCreateAPIView):
+class CustomerView(viewsets.ModelViewSet):
     queryset = Customer.objects.all()
     serializer_class = (
         CustomerSerializer  # Changed from `serializer` to `serializer_class`
     )
+    lookup_field = "customer_number"
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
