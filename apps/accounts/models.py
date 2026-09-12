@@ -66,15 +66,6 @@ class Account(TrashModel, TimestampModel):
         default=0,
     )
 
-    opened_at = models.DateTimeField(
-        auto_now_add=True,
-    )
-
-    closed_at = models.DateTimeField(
-        null=True,
-        blank=True,
-    )
-
     is_deleted = models.BooleanField(default=False)
 
     class Meta:

@@ -122,6 +122,11 @@ LOGGING = {
             "level": "INFO",
             "propagate": False,
         },
+        "django.db.backends": {
+            "handlers": ["console"],
+            "level": "DEBUG",  # Must be set to DEBUG to capture executed SQL queries
+            "propagate": False,
+        },
         "apps": {  # Our domain apps will use this logger
             "handlers": ["console"],
             "level": "DEBUG",
@@ -129,7 +134,6 @@ LOGGING = {
         },
     },
 }
-
 
 REST_FRAMEWORK = {
     # Schema generator for Swagger / OpenAPI

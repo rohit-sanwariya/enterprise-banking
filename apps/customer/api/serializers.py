@@ -1,9 +1,12 @@
 from rest_framework import serializers
 
+from apps.accounts.api.serializers import AccountSerializer
 from apps.customer.models import Customer
 
 
 class CustomerSerializer(serializers.ModelSerializer):
+    accounts = AccountSerializer(many=True, read_only=True)
+
     class Meta:
         model = Customer
         fields = [
@@ -18,6 +21,7 @@ class CustomerSerializer(serializers.ModelSerializer):
             "customer_number",
             "status",
             "updated_at",
+            "accounts",
         ]
 
         read_only_fields = [

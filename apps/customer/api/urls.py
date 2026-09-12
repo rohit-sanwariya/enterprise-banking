@@ -1,6 +1,6 @@
 from django.urls import path
 
-from apps.customer.api.views.create_customer_view import CustomerView
+from apps.customer.api.views.view import CustomerView
 
 urlpatterns = [
     path(
