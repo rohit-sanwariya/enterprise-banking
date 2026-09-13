@@ -155,3 +155,15 @@ celerybeat-schedule
 celerybeat-schedule.*
 # Celery Beat
 celerybeat-schedule*
+
+
+
+# Go build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Air temporary build directory
+notification-service/tmp/
