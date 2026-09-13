@@ -1,5 +1,6 @@
 services:
 
+  # Core banking services
   postgres:
     image: postgres:16-alpine
 
@@ -27,6 +28,144 @@ services:
     networks:
       - banking
 
+
+  celery:
+    build: .
+    command: uv run celery -A config worker --loglevel=INFO
+
+    env_file:
+      - .env.docker
+
+    volumes:
+      - .:/app
+      - docker_venv:/app/.venv
+
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      rabbitmq:
+        condition: service_healthy
+
+    networks:
+      - banking
+
+
+  celery-beat:
+    build: .
+    command: uv run celery -A config beat --loglevel=INFO
+
+    env_file:
+      - .env.docker
+
+    volumes:
+      - .:/app
+      - docker_venv:/app/.venv
+
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      rabbitmq:
+        condition: service_healthy
+
+    networks:
+      - banking
+
+
+  # Shared infrastructure
+  rabbitmq:
+    image: rabbitmq:4-management
+
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 15s
+
+    networks:
+      - banking
+
+
+  # Notification service components
+  notification-postgres:
+    image: postgres:16-alpine
+
+    environment:
+      POSTGRES_DB: notifications
+      POSTGRES_USER: notifications
+      POSTGRES_PASSWORD: notifications
+
+    ports:
+      - "5455:5432"
+
+    volumes:
+      - notification_postgres_data:/var/lib/postgresql/data
+
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U notifications -d notifications"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+
+    networks:
+      - banking
+
+
+  notification-migrate:
+    image: migrate/migrate
+
+    command:
+      - "-path=/migrations"
+      - "-database=postgres://notifications:notifications@notification-postgres:5432/notifications?sslmode=disable"
+      - "up"
+
+    volumes:
+      - ./notification-service/migrations:/migrations
+
+    depends_on:
+      notification-postgres:
+        condition: service_healthy
+
+    networks:
+      - banking
+
+
+  notification-service:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+
+    environment:
+      DATABASE_URL: postgres://notifications:notifications@notification-postgres:5432/notifications
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
+
+    volumes:
+      - ./notification-service:/app
+
+    depends_on:
+      notification-postgres:
+        condition: service_healthy
+      notification-migrate:
+        condition: service_completed_successfully
+      rabbitmq:
+        condition: service_healthy
+
+    networks:
+      - banking
+
+
   migrate:
     build: .
     command: uv run python manage.py migrate
@@ -44,6 +183,7 @@ services:
 
     networks:
       - banking
+
 
   web:
     build: .
@@ -66,9 +206,13 @@ services:
     networks:
       - banking
 
+
 volumes:
   postgres_data:
   docker_venv:
+  rabbitmq_data:
+  notification_postgres_data:
+
 
 networks:
   banking:

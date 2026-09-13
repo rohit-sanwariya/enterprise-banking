@@ -1,5 +1,7 @@
 # apps/common/models.py
 
+import uuid
+
 from django.db import models
 from django.utils import timezone
 
@@ -56,3 +58,21 @@ class TrashModel(models.Model):
         self.trash = False
         self.trashed_at = None
         self.save(update_fields=["trash", "trashed_at"])
+
+
+class OutboxEvent(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    event_type = models.CharField(max_length=255)
+
+    payload = models.JSONField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    published = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = "outbox_events"
+        indexes = [
+            models.Index(fields=["published", "created_at"]),
+        ]

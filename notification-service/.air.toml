@@ -1,0 +1,24 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+cmd = "go build -o ./tmp/notification-service ."
+entrypoint = "./tmp/notification-service"
+
+include_ext = ["go"]
+exclude_dir = ["tmp", "vendor", "migrations"]
+exclude_regex = ["_test\\.go"]
+
+delay = 1000
+poll = true
+poll_interval = 500
+
+stop_on_error = true
+send_interrupt = true
+kill_delay = 500
+
+[log]
+time = true
+
+[misc]
+clean_on_exit = true

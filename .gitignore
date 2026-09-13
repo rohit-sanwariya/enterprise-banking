@@ -148,3 +148,10 @@ htmlcov/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+
+
+# Celery
+celerybeat-schedule
+celerybeat-schedule.*
+# Celery Beat
+celerybeat-schedule*

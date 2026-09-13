@@ -6,6 +6,7 @@ from apps.accounts.domain.exceptions.customer_does_not_exist import (
     CustomerNotFoundError,
 )
 from apps.accounts.models import Account
+from apps.common.models import OutboxEvent
 from apps.customer.models import Customer
 
 
@@ -18,6 +19,7 @@ class OpenAccountService:
         account_type: str,
         currency: str = "INR",
     ) -> Account:
+
         try:
             customer = Customer.objects.get(
                 customer_number=customer_number,
@@ -38,6 +40,15 @@ class OpenAccountService:
             customer=customer,
             account_type=account_type,
             currency=currency,
+        )
+
+        OutboxEvent.objects.create(
+            event_type="account.created",
+            payload={
+                "account_id": str(account.id),
+                "customer_id": str(customer.id),
+                "email": customer.email,
+            },
         )
 
         return account
