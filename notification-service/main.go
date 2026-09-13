@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"notification-service/consumer"
+	"notification-service/email"
 	"notification-service/messaging"
 	"notification-service/storage"
 )
@@ -34,7 +35,13 @@ func main() {
 		log.Fatal(err)
 	}
 
-	c := consumer.New(ch, db)
+	emailSender := email.NewSender(
+		os.Getenv("SMTP_HOST"),
+		os.Getenv("SMTP_PORT"),
+		os.Getenv("SMTP_FROM"),
+	)
+
+	c := consumer.New(ch, db, emailSender)
 
 	if err := c.Start(ctx); err != nil {
 		log.Fatal(err)

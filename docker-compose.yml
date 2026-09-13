@@ -151,6 +151,10 @@ services:
       DATABASE_URL: postgres://notifications:notifications@notification-postgres:5432/notifications
       RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
 
+      SMTP_HOST: mailpit
+      SMTP_PORT: "1025"
+      SMTP_FROM: notifications@banking.local
+
     volumes:
       - ./notification-service:/app
 
@@ -161,6 +165,15 @@ services:
         condition: service_completed_successfully
       rabbitmq:
         condition: service_healthy
+
+    networks:
+      - banking
+  mailpit:
+    image: axllent/mailpit:latest
+
+    ports:
+      - "1025:1025"
+      - "8025:8025"
 
     networks:
       - banking

@@ -7,19 +7,26 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/rabbitmq/amqp091-go"
 
+	"notification-service/email"
 	"notification-service/handler"
 	"notification-service/storage"
 )
 
 type Consumer struct {
-	channel *amqp091.Channel
-	db      *pgx.Conn
+	channel    *amqp091.Channel
+	db         *pgx.Conn
+	emailSender *email.Sender
 }
 
-func New(channel *amqp091.Channel, db *pgx.Conn) *Consumer {
+func New(
+	channel *amqp091.Channel,
+	db *pgx.Conn,
+	emailSender *email.Sender,
+) *Consumer {
 	return &Consumer{
-		channel: channel,
-		db:      db,
+		channel:     channel,
+		db:          db,
+		emailSender: emailSender,
 	}
 }
 
@@ -94,7 +101,7 @@ func (c *Consumer) processMessage(
 
 	log.Printf("calling HandleEvent: %s", event.EventID)
 
-	if err := handler.HandleEvent(event); err != nil {
+	if err := handler.HandleEvent(event, c.emailSender); err != nil {
 		log.Printf("HandleEvent FAILED: %v", err)
 
 		// Processing failed — ask RabbitMQ to redeliver.

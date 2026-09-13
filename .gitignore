@@ -167,3 +167,4 @@ celerybeat-schedule*
 
 # Air temporary build directory
 notification-service/tmp/
+notification-service/tmp/notification-service

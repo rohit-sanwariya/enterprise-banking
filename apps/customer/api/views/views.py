@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 class CustomerView(viewsets.ModelViewSet):
-    queryset = Customer.objects.all()
+    queryset = Customer.objects.prefetch_related("accounts")
     serializer_class = (
         CustomerSerializer  # Changed from `serializer` to `serializer_class`
     )
