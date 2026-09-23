@@ -2,11 +2,31 @@ package customer
 
 import (
 	"context"
+	"errors"
+
 	"github.com/jackc/pgx/v5"
 )
 
 type CustomerRepository struct {
 	db *pgx.Conn
+}
+
+func (r *CustomerRepository) Delete(ctx context.Context, customerNumber string) error {
+	result, err := r.db.Exec(
+		ctx,
+		deleteCustomerQuery,
+		customerNumber,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	if result.RowsAffected() == 0 {
+		return errors.New("customer not found")
+	}
+
+	return nil
 }
 
 func NewCustomerRepository(db *pgx.Conn) *CustomerRepository {
@@ -38,7 +58,7 @@ func (r *CustomerRepository) Create(ctx context.Context, customer *Customer) err
 	return err
 }
 
-func (r *CustomerRepository) List(ctx context.Context,page int,limit int) ([]*CustomerListItem, error) {
+func (r *CustomerRepository) List(ctx context.Context, page int, limit int) ([]*CustomerListItem, error) {
 	offset := (page - 1) * limit
 	rows, err := r.db.Query(
 		ctx,

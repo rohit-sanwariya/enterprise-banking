@@ -8,6 +8,7 @@ import (
 	"time"
 	"unicode/utf8"
 )
+
 func parseDateOfBirth(value *string) (*time.Time, error) {
 	if value == nil || strings.TrimSpace(*value) == "" {
 		return nil, nil

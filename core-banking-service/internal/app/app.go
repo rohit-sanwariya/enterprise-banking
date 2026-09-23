@@ -3,12 +3,12 @@ package app
 import (
 	"context"
 	"fmt"
+	"github.com/jackc/pgx/v5"
+	httpSwagger "github.com/swaggo/http-swagger/v2"
+	"log"
 	"net/http"
 	"os"
 	"time"
-	"log"
-	"github.com/jackc/pgx/v5"
-	httpSwagger "github.com/swaggo/http-swagger/v2"
 
 	"core-banking-service/internal/customer"
 
@@ -66,8 +66,8 @@ func New() (*App, error) {
 	// -------------------------
 
 	server := &http.Server{
-		Addr:    ":8080",
-		
+		Addr: ":8080",
+
 		Handler: loggingMiddleware(mux),
 	}
 
@@ -82,6 +82,7 @@ func (a *App) Run() error {
 
 	return a.server.ListenAndServe()
 }
+
 type responseWriter struct {
 	http.ResponseWriter
 	statusCode int

@@ -97,6 +97,44 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/customers/{customerNumber}": {
+            "delete": {
+                "description": "Delete Customer by customer number",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "customers"
+                ],
+                "summary": "Delete Customer by customer number",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Customer number",
+                        "name": "customerNumber",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {

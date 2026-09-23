@@ -22,8 +22,13 @@ const insertCustomerQuery = `
 		$8, $9, $10, $11, $12, $13, $14
 	)
 `
-
-const listCustomerQuery =  `
+const deleteCustomerQuery = `
+    UPDATE customer.customer
+    SET trash = true,
+        trashed_at = NOW()
+    WHERE customer_number = $1;
+`
+const listCustomerQuery = `
         SELECT 
             first_name,
             middle_name,

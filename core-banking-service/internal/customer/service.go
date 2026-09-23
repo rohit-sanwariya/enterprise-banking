@@ -16,7 +16,7 @@ func NewCustomerService(repository *CustomerRepository) *CustomerService {
 	}
 }
 func (s *CustomerService) List(ctx context.Context, page int, limit int) ([]*CustomerListItem, error) {
-	customers, err := s.repository.List(ctx,page,limit)
+	customers, err := s.repository.List(ctx, page, limit)
 	if err != nil {
 		return nil, err
 	}
@@ -69,4 +69,11 @@ func (s *CustomerService) Create(
 	}
 
 	return customer, nil
+}
+
+func (s *CustomerService) Delete(ctx context.Context, customerNumber string) error {
+
+	err := s.repository.Delete(ctx, customerNumber)
+
+	return err
 }

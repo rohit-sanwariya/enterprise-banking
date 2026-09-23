@@ -1,9 +1,9 @@
 package customer
 
 import (
-	"time"
 	"core-banking-service/internal/common"
 	"github.com/google/uuid"
+	"time"
 )
 
 type CustomerType string
@@ -22,6 +22,7 @@ const (
 	CustomerStatusFrozen   CustomerStatus = "FROZEN"
 	CustomerStatusDeceased CustomerStatus = "DECEASED"
 )
+
 type Customer struct {
 	ID             uuid.UUID
 	CustomerNumber string
@@ -32,12 +33,11 @@ type Customer struct {
 	DateOfBirth    *time.Time
 	Email          string
 	PhoneNumber    *string
-	Status         CustomerStatus 
+	Status         CustomerStatus
 
 	common.Timestamp
-	common.SoftDelete 
+	common.SoftDelete
 }
-
 
 type CustomerListItem struct {
 	CustomerNumber string         `json:"customer_number"`

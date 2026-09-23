@@ -10,4 +10,5 @@ func RegisterRoutes(
 ) {
 	mux.HandleFunc("POST /customers", handler.Create)
 	mux.HandleFunc("GET /customers", handler.List)
+	mux.HandleFunc("DELETE /customers/{customerNumber}", handler.Delete)
 }
