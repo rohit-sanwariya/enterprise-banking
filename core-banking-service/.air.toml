@@ -1,0 +1,26 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+cmd = "swag init -g cmd/server/main.go --parseInternal && go build -o ./tmp/core-banking-service ./cmd/server"
+entrypoint = "./tmp/core-banking-service"
+
+include_ext = ["go"]
+include_dir = ["cmd", "internal"]
+exclude_dir = ["tmp", "vendor", "migrations", "docs"]
+
+exclude_regex = ["_test\\.go", "docs/.*"]
+
+delay = 1000
+poll = true
+poll_interval = 500
+
+stop_on_error = true
+send_interrupt = true
+kill_delay = 500
+
+[log]
+time = true
+
+[misc]
+clean_on_exit = true

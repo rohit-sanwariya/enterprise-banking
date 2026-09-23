@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"log"
 
 	"notification-service/email"
@@ -58,19 +60,21 @@ func handleAccountCreated(
 
 	subject := "Your bank account has been created"
 
-	body := fmt.Sprintf(
-		"Hello,\n\n"+
-			"Your bank account has been successfully created.\n\n"+
-			"Account ID: %s\n\n"+
-			"Thank you,\n"+
-			"Enterprise Banking",
-		account.AccountID,
-	)
+	tmpl, err := template.ParseFiles("email/templates/account_created.html")
+	if err != nil {
+		return fmt.Errorf("parse account created email template: %w", err)
+	}
+
+	var body bytes.Buffer
+
+	if err := tmpl.Execute(&body, account); err != nil {
+		return fmt.Errorf("execute account created email template: %w", err)
+	} 
 
 	if err := emailSender.Send(
 		account.Email,
 		subject,
-		body,
+		body.String(),
 	); err != nil {
 		return fmt.Errorf("send account created email: %w", err)
 	}

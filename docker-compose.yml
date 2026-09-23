@@ -168,6 +168,8 @@ services:
 
     networks:
       - banking
+
+
   mailpit:
     image: axllent/mailpit:latest
 
@@ -218,6 +220,25 @@ services:
 
     networks:
       - banking
+
+
+  core-banking-service:
+    build: ./core-banking-service
+
+    ports:
+      - "8081:8080"
+
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/banking
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    networks:
+      - banking
+    volumes:
+      - ./core-banking-service:/app
 
 
 volumes:
