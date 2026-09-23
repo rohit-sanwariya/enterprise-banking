@@ -137,7 +137,7 @@ logs/
 # IDE
 .idea/
 .vscode/
-
+**/tmp/
 # OS
 .DS_Store
 Thumbs.db
