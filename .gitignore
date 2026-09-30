@@ -164,6 +164,7 @@ celerybeat-schedule*
 *.dll
 *.so
 *.dylib
+**/__debug_bin*
 
 # Air temporary build directory
 notification-service/tmp/

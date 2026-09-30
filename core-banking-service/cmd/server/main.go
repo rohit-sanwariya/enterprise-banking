@@ -1,9 +1,9 @@
 package main
 
 import (
+	"core-banking-service/internal/app"
 	"log"
 
-	"core-banking-service/internal/app"
 )
 
 func main() {
@@ -11,7 +11,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	log.Println("HTTP server listening on :8080")
 
 	if err := application.Run(); err != nil {
