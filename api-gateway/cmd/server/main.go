@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"os"
 
+	"api-gateway/config"
 	"api-gateway/internal/cache"
 	"api-gateway/internal/proxy"
-	"api-gateway/config"
 )
 
 func main() {
@@ -52,7 +52,7 @@ func main() {
 
 	gatewayHandler := proxy.NewHandler(router, proxies)
 	mux := http.NewServeMux()
-mux.Handle("/api/", gatewayHandler)
+	mux.Handle("/api/", gatewayHandler)
 	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)

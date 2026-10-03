@@ -2,7 +2,7 @@ package config
 
 type Config struct {
 	Services map[string]Service `yaml:"services"`
-	Routes   []Route             `yaml:"routes"`
+	Routes   []Route            `yaml:"routes"`
 }
 
 type Service struct {

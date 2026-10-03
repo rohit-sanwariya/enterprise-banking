@@ -11,16 +11,14 @@ type Proxy struct {
 	proxy  *httputil.ReverseProxy
 }
 
-func NewProxy(service config.Service) (*Proxy,error) {
-	target , err := url.Parse(service.URL)
+func NewProxy(service config.Service) (*Proxy, error) {
+	target, err := url.Parse(service.URL)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 
 	return &Proxy{
 		target: target,
-		proxy: httputil.NewSingleHostReverseProxy(target),
-	},nil
+		proxy:  httputil.NewSingleHostReverseProxy(target),
+	}, nil
 }
-
-

@@ -1,13 +1,22 @@
 FROM golang:1.27-alpine
 
+# Install build essentials if your app or delve dependencies require CGO/GCC
+RUN apk add --no-cache gcc musl-dev
+
 WORKDIR /app
 
+# Sets default installation directory for `go install`
 ENV GOBIN=/usr/local/bin
 
-RUN go install github.com/air-verse/air@latest \
-	&& go install github.com/go-delve/delve/cmd/dlv@latest
+# Install Air and Delve directly into /usr/local/bin
+RUN go install github.com/air-verse/air@latest && \
+    go install github.com/go-delve/delve/cmd/dlv@latest
 
+# Cache dependencies
 COPY go.mod go.sum ./
 RUN go mod download
+
+# Expose Delve debugger port
+EXPOSE 2345
 
 CMD ["air", "-c", ".air.docker.toml"]

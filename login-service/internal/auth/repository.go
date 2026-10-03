@@ -55,3 +55,29 @@ func (r *Repository) CreateIdentity(
 	}
 	return identity, nil
 }
+
+func (r *Repository) FindByEmail(
+	ctx context.Context,
+	email string,
+) (*Identity, error) {
+
+	var identity Identity
+
+	err := r.db.QueryRow(
+		ctx,
+		getIdentityByEmail,
+		pgx.NamedArgs{
+			"email": email,
+		},
+	).Scan(
+		&identity.ID,
+		&identity.CustomerID,
+		&identity.Email,
+		&identity.PasswordHash,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &identity, nil
+}

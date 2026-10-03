@@ -139,6 +139,7 @@ services:
       DATABASE_URL: postgres://login:login@login-postgres:5432/login?sslmode=disable
     ports:
       - "8082:8080"
+      - "2345:2345"
     volumes:
       - ./login-service:/app
       - login_go_cache:/go

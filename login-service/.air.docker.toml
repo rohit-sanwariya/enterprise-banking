@@ -2,8 +2,9 @@ root = "."
 tmp_dir = "tmp"
 
 [build]
-  cmd = "go build -o ./tmp/main ./cmd/server"
-  entrypoint = ["./tmp/main"]
+  cmd = "go build -gcflags=\"all=-N -l\" -o ./tmp/main ./cmd/server"
+  bin = "./tmp/main"
+  full_bin = "dlv exec --accept-multiclient --continue --headless --listen=:2345 --api-version=2 ./tmp/main"
 
   include_ext = ["go"]
   exclude_dir = ["tmp", "vendor"]
