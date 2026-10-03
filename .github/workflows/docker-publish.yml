@@ -11,6 +11,19 @@ permissions:
 jobs:
   docker:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service:
+          - name: login-service
+            context: ./login-service
+            file: ./login-service/Dockerfile
+          - name: core-banking-service
+            context: ./core-banking-service
+            file: ./core-banking-service/Dockerfile
+          - name: notification-service
+            context: ./notification-service
+            file: ./notification-service/Dockerfile
 
     steps:
       - name: Checkout repository
@@ -25,10 +38,10 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
 
-      - name: Build and push Docker image
+      - name: Build and push ${{ matrix.service.name }}
         uses: docker/build-push-action@v7
         with:
-          context: .
-          file: ./Dockerfile
+          context: ${{ matrix.service.context }}
+          file: ${{ matrix.service.file }}
           push: true
-          tags: ${{ vars.DOCKERHUB_USERNAME }}/enterprise-banking:latest
+          tags: ${{ vars.DOCKERHUB_USERNAME }}/${{ matrix.service.name }}:latest
