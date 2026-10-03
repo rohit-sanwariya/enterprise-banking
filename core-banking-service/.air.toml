@@ -2,14 +2,14 @@ root = "."
 tmp_dir = "tmp"
 
 [build]
-cmd = "swag init -g cmd/server/main.go --parseInternal && go build -o ./tmp/core-banking-service ./cmd/server"
+cmd = "go build -o ./tmp/core-banking-service ./cmd/server"
 entrypoint = "./tmp/core-banking-service"
 
 include_ext = ["go"]
 include_dir = ["cmd", "internal"]
-exclude_dir = ["tmp", "vendor", "migrations", "docs"]
+exclude_dir = ["tmp", "vendor", "migrations"]
 
-exclude_regex = ["_test\\.go", "docs/.*"]
+exclude_regex = ["_test\\.go"]
 
 delay = 1000
 poll = true

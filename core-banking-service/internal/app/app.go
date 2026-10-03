@@ -8,13 +8,12 @@ import (
 	"os"
 	"time"
 
+	"github.com/danielgtaylor/huma/v2"
+	"github.com/danielgtaylor/huma/v2/adapters/humago"
 	"github.com/jackc/pgx/v5"
-	httpSwagger "github.com/swaggo/http-swagger/v2"
 
 	"core-banking-service/internal/customer"
 	"core-banking-service/internal/login"
-
-	_ "core-banking-service/docs"
 )
 
 type App struct {
@@ -55,14 +54,8 @@ func New() (*App, error) {
 
 	mux := http.NewServeMux()
 
-	mux.Handle(
-		"/swagger/",
-		httpSwagger.Handler(
-			httpSwagger.URL("/swagger/doc.json"),
-		),
-	)
-
-	customer.RegisterRoutes(mux, "/api/v1", customerHandler)
+	api := humago.New(mux, huma.DefaultConfig("Core Banking Service", "1.0.0"))
+	customer.RegisterRoutes(api, "/api/v1/core", customerHandler)
 
 	// -------------------------
 	// HTTP server

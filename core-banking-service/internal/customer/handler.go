@@ -1,11 +1,12 @@
 package customer
 
 import (
-	"encoding/json"
+	"context"
 	"log"
 	"net/http"
-	"strconv"
 	"strings"
+
+	"github.com/danielgtaylor/huma/v2"
 )
 
 type CreateCustomerRequest struct {
@@ -23,32 +24,42 @@ type CustomerHandler struct {
 	service *CustomerService
 }
 
+type CreateCustomerInput struct {
+	Body CreateCustomerRequest
+}
+
+type CreateCustomerOutput struct {
+	Status int `status:"201"`
+	Body   *Customer
+}
+
+type ListCustomersInput struct {
+	Page  int `query:"page" required:"true" minimum:"1"`
+	Limit int `query:"limit" required:"true" minimum:"1" maximum:"100"`
+}
+
+type ListCustomersOutput struct {
+	Body []*CustomerListItem
+}
+
+type DeleteCustomerInput struct {
+	CustomerNumber string `path:"customerNumber"`
+}
+
+type DeleteCustomerOutput struct {
+	Status int `status:"204"`
+}
+
 func NewCustomerHandler(service *CustomerService) *CustomerHandler {
 	return &CustomerHandler{
 		service: service,
 	}
 }
 
-// CreateCustomer godoc
-// @Summary Create a customer
-// @Description Creates a new customer.
-// @Tags customers
-// @Accept json
-// @Produce json
-// @Param customer body CreateCustomerRequest true "Customer"
-// @Success 201 {object} Customer
-// @Failure 400 {string} string
-// @Router /customers [post]
-func (h *CustomerHandler) Create(w http.ResponseWriter, r *http.Request) {
-	var request CreateCustomerRequest
-
-	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-		http.Error(w, "invalid request body", http.StatusBadRequest)
-		return
-	}
-
+func (h *CustomerHandler) Create(ctx context.Context, input *CreateCustomerInput) (*CreateCustomerOutput, error) {
+	request := input.Body
 	customer, err := h.service.Create(
-		r.Context(),
+		ctx,
 		request.CustomerType,
 		request.FirstName,
 		request.MiddleName,
@@ -59,72 +70,40 @@ func (h *CustomerHandler) Create(w http.ResponseWriter, r *http.Request) {
 		request.Password,
 	)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
+		return nil, huma.NewError(http.StatusBadRequest, err.Error())
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-
-	_ = json.NewEncoder(w).Encode(customer)
+	return &CreateCustomerOutput{
+		Status: http.StatusCreated,
+		Body:   customer,
+	}, nil
 }
 
-// GetAllCustomers godoc
-// @Summary Get all customers
-// @Description Get all customers.
-// @Tags customers
-// @Produce json
-// @Success 200 {array} Customer
-// @Failure 500 {string} string
-// @Router /customers [get]
-// @Param page query int false "Page number" default(1)
-// @Param limit query int false "Number of customers per page" default(20)
-func (h *CustomerHandler) List(w http.ResponseWriter, r *http.Request) {
-	page, err := strconv.Atoi(r.URL.Query().Get("page"))
-	if err != nil || page < 1 {
-		http.Error(w, "page must be a positive integer", http.StatusBadRequest)
-		return
+func (h *CustomerHandler) List(ctx context.Context, input *ListCustomersInput) (*ListCustomersOutput, error) {
+	if input.Page < 1 {
+		return nil, huma.NewError(http.StatusBadRequest, "page must be a positive integer")
 	}
-	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
-	if err != nil || limit < 1 || limit > 100 {
-		http.Error(w, "limit must be between 1 and 100", http.StatusBadRequest)
-		return
+	if input.Limit < 1 || input.Limit > 100 {
+		return nil, huma.NewError(http.StatusBadRequest, "limit must be between 1 and 100")
 	}
-	customers, err := h.service.List(r.Context(), page, limit)
+	customers, err := h.service.List(ctx, input.Page, input.Limit)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return nil, huma.NewError(http.StatusInternalServerError, err.Error())
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-
-	_ = json.NewEncoder(w).Encode(customers)
+	return &ListCustomersOutput{Body: customers}, nil
 }
 
-// DeleteCustomer godoc
-//
-// @Summary Delete Customer by customer number
-// @Description Delete Customer by customer number
-// @Tags customers
-// @Produce json
-// @Param customerNumber path string true "Customer number"
-// @Success 204
-// @Failure 400 {string} string
-// @Failure 500 {string} string
-// @Router /customers/{customerNumber} [delete]
-func (h *CustomerHandler) Delete(w http.ResponseWriter, r *http.Request) {
-	customerNumber := r.PathValue("customerNumber")
-
+func (h *CustomerHandler) Delete(ctx context.Context, input *DeleteCustomerInput) (*DeleteCustomerOutput, error) {
+	customerNumber := input.CustomerNumber
 	if strings.TrimSpace(customerNumber) == "" {
-		http.Error(w, "Enter Valid customer number", http.StatusBadRequest)
+		return nil, huma.NewError(http.StatusBadRequest, "Enter Valid customer number")
 	}
-	err := h.service.Delete(r.Context(), customerNumber)
+	err := h.service.Delete(ctx, customerNumber)
 	if err != nil {
 		log.Printf("delete customer failed: %v", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return nil, huma.NewError(http.StatusInternalServerError, err.Error())
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusNoContent)
+
+	return &DeleteCustomerOutput{Status: http.StatusNoContent}, nil
 }
