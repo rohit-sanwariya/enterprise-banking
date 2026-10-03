@@ -62,7 +62,7 @@ func New() (*App, error) {
 		),
 	)
 
-	customer.RegisterRoutes(mux, customerHandler)
+	customer.RegisterRoutes(mux, "/api/v1", customerHandler)
 
 	// -------------------------
 	// HTTP server
