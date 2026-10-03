@@ -2,8 +2,8 @@ package storage
 
 import (
 	"context"
-	"log"
 	"github.com/jackc/pgx/v5"
+	"log"
 )
 
 func EventAlreadyProcessed(

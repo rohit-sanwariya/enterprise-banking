@@ -34,7 +34,7 @@ type Customer struct {
 	Email          string
 	PhoneNumber    *string
 	Status         CustomerStatus
-	Password 		string
+	Password       string
 
 	common.Timestamp
 	common.SoftDelete

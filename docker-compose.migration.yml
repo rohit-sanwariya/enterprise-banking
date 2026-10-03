@@ -1,6 +1,57 @@
 services:
 
   # -------------------------
+  # Redis
+  # -------------------------
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - banking
+
+
+  # -------------------------
+  # API Gateway
+  # -------------------------
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    environment:
+      SERVER_ADDR: ":8080"
+      LOGIN_SERVICE_URL: http://login-service:8080
+      CORE_BANKING_SERVICE_URL: http://core-banking-service:8080
+      REDIS_URL: redis://redis:6379
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./api-gateway:/app
+      - api_gateway_go_cache:/go
+    command: ["air"]
+    depends_on:
+      redis:
+        condition: service_healthy
+      login-service:
+        condition: service_started
+      core-banking-service:
+        condition: service_started
+    networks:
+      - banking
+    restart: unless-stopped
+
+
+  # -------------------------
   # Core Banking
   # -------------------------
 
@@ -40,6 +91,7 @@ services:
       - ./core-banking-service:/app
     networks:
       - banking
+
 
   # -------------------------
   # Login
@@ -107,7 +159,13 @@ volumes:
     name: enterprise-banking_postgres_data
 
   login_postgres_data:
+
   login_go_cache:
+
+  api_gateway_go_cache:
+
+  redis_data:
+
 
 networks:
   banking:

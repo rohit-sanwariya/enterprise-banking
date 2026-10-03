@@ -15,7 +15,7 @@ type CreateCustomerRequest struct {
 	LastName     string       `json:"last_name"`
 	DateOfBirth  *string      `json:"date_of_birth"`
 	Email        string       `json:"email"`
-	Password        string       `json:"password"`
+	Password     string       `json:"password"`
 	PhoneNumber  *string      `json:"phone_number"`
 }
 

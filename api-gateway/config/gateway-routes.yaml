@@ -1,0 +1,13 @@
+services:
+  login:
+    url: http://login-service:8080
+
+  core-banking:
+    url: http://core-banking-service:8080
+
+routes:
+  - path: /api/v1/login
+    service: login
+
+  - path: /api/v1/core
+    service: core-banking

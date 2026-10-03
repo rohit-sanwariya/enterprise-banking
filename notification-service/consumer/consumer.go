@@ -13,8 +13,8 @@ import (
 )
 
 type Consumer struct {
-	channel    *amqp091.Channel
-	db         *pgx.Conn
+	channel     *amqp091.Channel
+	db          *pgx.Conn
 	emailSender *email.Sender
 }
 
@@ -84,8 +84,6 @@ func (c *Consumer) processMessage(
 
 		return err
 	}
-
- 
 
 	if processed {
 		log.Printf("event already processed: %s", event.EventID)

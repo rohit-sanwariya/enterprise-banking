@@ -49,17 +49,9 @@ func New() (*App, error) {
 
 	loginClient := login.NewClient(loginServiceURL)
 
-	
-	
-
-
-
-	
-
 	customerRepository := customer.NewCustomerRepository(db)
 	customerService := customer.NewCustomerService(customerRepository, loginClient)
 	customerHandler := customer.NewCustomerHandler(customerService)
-
 
 	mux := http.NewServeMux()
 

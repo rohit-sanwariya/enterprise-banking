@@ -10,37 +10,35 @@ import (
 )
 
 type Identity struct {
-	ID uuid.UUID
+	ID           uuid.UUID
 	CustomerID   uuid.UUID
-	Email string
-	PasswordHash string 
+	Email        string
+	PasswordHash string
 }
-
 
 type Repository struct {
-	db *pgxpool.Pool 
+	db *pgxpool.Pool
 }
 
-func NewRepository(db *pgxpool.Pool) *Repository{
+func NewRepository(db *pgxpool.Pool) *Repository {
 	return &Repository{
-		db:db,
+		db: db,
 	}
 }
-
 
 func (r *Repository) CreateIdentity(
 	ctx context.Context,
 	email string,
 	passwordHash string,
 	customerID uuid.UUID,
-) (*Identity,error) {
+) (*Identity, error) {
 	identity := &Identity{}
 	id := uuid.New()
 	args := pgx.NamedArgs{
-		"id": id,
-		"email": email,
-		"password_hash" : passwordHash,
-		"customer_id" : customerID,
+		"id":            id,
+		"email":         email,
+		"password_hash": passwordHash,
+		"customer_id":   customerID,
 	}
 
 	err := r.db.QueryRow(

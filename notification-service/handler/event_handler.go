@@ -69,7 +69,7 @@ func handleAccountCreated(
 
 	if err := tmpl.Execute(&body, account); err != nil {
 		return fmt.Errorf("execute account created email template: %w", err)
-	} 
+	}
 
 	if err := emailSender.Send(
 		account.Email,

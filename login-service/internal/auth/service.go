@@ -22,12 +22,12 @@ func (svc *Service) Register(
 	password string,
 	customerID uuid.UUID,
 
-) ( *Identity, error){
-	passwordHash,err := HashPassword(password)
-		if err != nil {
-		return nil,fmt.Errorf("Service failed to create = %w", err)
+) (*Identity, error) {
+	passwordHash, err := HashPassword(password)
+	if err != nil {
+		return nil, fmt.Errorf("Service failed to create = %w", err)
 	}
-	identity,err := svc.repository.CreateIdentity(
+	identity, err := svc.repository.CreateIdentity(
 		ctx,
 		email,
 		passwordHash,
@@ -35,10 +35,9 @@ func (svc *Service) Register(
 	)
 
 	if err != nil {
-		return nil,fmt.Errorf("Service failed to create = %w", err)
+		return nil, fmt.Errorf("Service failed to create = %w", err)
 	}
 
-	return identity,err
-
+	return identity, err
 
 }

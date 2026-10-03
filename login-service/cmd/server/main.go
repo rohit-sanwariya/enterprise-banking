@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-		ctx := context.Background()
+	ctx := context.Background()
 
 	databaseURL := os.Getenv("DATABASE_URL")
 	if databaseURL == "" {
@@ -27,7 +27,7 @@ func main() {
 	router := chi.NewRouter()
 	authRepository := auth.NewRepository(db)
 	authService := auth.NewService(authRepository)
-authHandler := auth.NewHandler(authService)
+	authHandler := auth.NewHandler(authService)
 	router.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte("OK"))

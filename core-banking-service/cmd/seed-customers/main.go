@@ -37,21 +37,21 @@ func main() {
 	defer db.Close(ctx)
 
 	repository := customer.NewCustomerRepository(db)
-		loginServiceURL := os.Getenv("LOGIN_SERVICE_URL")
+	loginServiceURL := os.Getenv("LOGIN_SERVICE_URL")
 
 	if loginServiceURL == "" {
 		log.Fatal("LOGIN_SERVICE_URL is required seed")
 	}
 
 	loginClient := login.NewClient(loginServiceURL)
-	service := customer.NewCustomerService(repository,loginClient)
+	service := customer.NewCustomerService(repository, loginClient)
 
 	for i := 0; i < count; i++ {
 		firstName := gofakeit.FirstName()
 		lastName := gofakeit.LastName()
 		email := gofakeit.Email()
 		phone := gofakeit.Phone()
-		password := gofakeit.Password(true, true ,true , true, true, 10)
+		password := gofakeit.Password(true, true, true, true, true, 10)
 
 		_, err := service.Create(
 			ctx,

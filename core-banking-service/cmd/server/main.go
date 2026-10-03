@@ -3,7 +3,6 @@ package main
 import (
 	"core-banking-service/internal/app"
 	"log"
-
 )
 
 func main() {
