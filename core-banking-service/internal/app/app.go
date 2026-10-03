@@ -3,14 +3,16 @@ package app
 import (
 	"context"
 	"fmt"
-	"github.com/jackc/pgx/v5"
-	httpSwagger "github.com/swaggo/http-swagger/v2"
 	"log"
 	"net/http"
 	"os"
 	"time"
 
+	"github.com/jackc/pgx/v5"
+	httpSwagger "github.com/swaggo/http-swagger/v2"
+
 	"core-banking-service/internal/customer"
+	"core-banking-service/internal/login"
 
 	_ "core-banking-service/docs"
 )
@@ -37,18 +39,27 @@ func New() (*App, error) {
 		db.Close(ctx)
 		return nil, fmt.Errorf("ping database: %w", err)
 	}
+	//login service
 
-	// -------------------------
-	// Customer dependencies
-	// -------------------------
+	loginServiceURL := os.Getenv("LOGIN_SERVICE_URL")
+
+	if loginServiceURL == "" {
+		log.Fatal("LOGIN_SERVICE_URL is required sfsdfs")
+	}
+
+	loginClient := login.NewClient(loginServiceURL)
+
+	
+	
+
+
+
+	
 
 	customerRepository := customer.NewCustomerRepository(db)
-	customerService := customer.NewCustomerService(customerRepository)
+	customerService := customer.NewCustomerService(customerRepository, loginClient)
 	customerHandler := customer.NewCustomerHandler(customerService)
 
-	// -------------------------
-	// HTTP routes
-	// -------------------------
 
 	mux := http.NewServeMux()
 

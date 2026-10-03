@@ -15,6 +15,7 @@ type CreateCustomerRequest struct {
 	LastName     string       `json:"last_name"`
 	DateOfBirth  *string      `json:"date_of_birth"`
 	Email        string       `json:"email"`
+	Password        string       `json:"password"`
 	PhoneNumber  *string      `json:"phone_number"`
 }
 
@@ -55,6 +56,7 @@ func (h *CustomerHandler) Create(w http.ResponseWriter, r *http.Request) {
 		request.DateOfBirth,
 		request.Email,
 		request.PhoneNumber,
+		request.Password,
 	)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

@@ -249,4 +249,6 @@ volumes:
 
 
 networks:
+  services:
   banking:
+    external: true

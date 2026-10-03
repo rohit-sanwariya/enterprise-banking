@@ -2,17 +2,20 @@ package customer
 
 import (
 	"context"
-
-	"github.com/google/uuid"
+	"core-banking-service/internal/login"
+	"log"
+	"uuid"
 )
 
 type CustomerService struct {
 	repository *CustomerRepository
+	loginClient *login.Client
 }
 
-func NewCustomerService(repository *CustomerRepository) *CustomerService {
+func NewCustomerService(repository *CustomerRepository, client *login.Client) *CustomerService {
 	return &CustomerService{
 		repository: repository,
+		loginClient: client,
 	}
 }
 func (s *CustomerService) List(ctx context.Context, page int, limit int) ([]*CustomerListItem, error) {
@@ -32,6 +35,7 @@ func (s *CustomerService) Create(
 	dateOfBirth *string,
 	email string,
 	phoneNumber *string,
+	password string,
 ) (*Customer, error) {
 
 	parsedDateOfBirth, err := parseDateOfBirth(dateOfBirth)
@@ -65,9 +69,21 @@ func (s *CustomerService) Create(
 
 	err = s.repository.Create(ctx, customer)
 	if err != nil {
+		log.Print("something went wrong",err)
 		return nil, err
 	}
-
+	x , err := s.loginClient.ProvisionIdentity(
+		ctx,
+		customer.ID,
+		email,
+		password,
+		
+	)
+	if err != nil {
+		log.Print(err)
+		return nil,err
+	}
+	log.Print(x)
 	return customer, nil
 }
 

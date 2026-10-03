@@ -4,7 +4,6 @@ go 1.27.0
 
 require (
 	github.com/brianvoe/gofakeit/v7 v7.17.0
-	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.11.0
 	github.com/swaggo/http-swagger/v2 v2.0.2
 	github.com/swaggo/swag v1.16.4

@@ -2,8 +2,8 @@ package customer
 
 import (
 	"core-banking-service/internal/common"
-	"github.com/google/uuid"
 	"time"
+	"uuid"
 )
 
 type CustomerType string
@@ -34,6 +34,7 @@ type Customer struct {
 	Email          string
 	PhoneNumber    *string
 	Status         CustomerStatus
+	Password 		string
 
 	common.Timestamp
 	common.SoftDelete

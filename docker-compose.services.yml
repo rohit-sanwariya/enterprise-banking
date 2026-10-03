@@ -7,7 +7,7 @@ services:
 
     environment:
       DATABASE_URL: postgres://login:login@login-postgres:5432/login?sslmode=disable
-
+      LOGIN_SERVICE_URL: http://login-service:8080
     ports:
       - "8082:8080"
 
@@ -25,6 +25,7 @@ services:
 
     networks:
       - services
+      - banking
 
     restart: unless-stopped
   login-migrate:

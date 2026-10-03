@@ -10,6 +10,7 @@ import (
 	"github.com/jackc/pgx/v5"
 
 	"core-banking-service/internal/customer"
+	"core-banking-service/internal/login"
 )
 
 func main() {
@@ -36,13 +37,21 @@ func main() {
 	defer db.Close(ctx)
 
 	repository := customer.NewCustomerRepository(db)
-	service := customer.NewCustomerService(repository)
+		loginServiceURL := os.Getenv("LOGIN_SERVICE_URL")
+
+	if loginServiceURL == "" {
+		log.Fatal("LOGIN_SERVICE_URL is required seed")
+	}
+
+	loginClient := login.NewClient(loginServiceURL)
+	service := customer.NewCustomerService(repository,loginClient)
 
 	for i := 0; i < count; i++ {
 		firstName := gofakeit.FirstName()
 		lastName := gofakeit.LastName()
 		email := gofakeit.Email()
 		phone := gofakeit.Phone()
+		password := gofakeit.Password(true, true ,true , true, true, 10)
 
 		_, err := service.Create(
 			ctx,
@@ -53,6 +62,7 @@ func main() {
 			nil,
 			email,
 			&phone,
+			password,
 		)
 		if err != nil {
 			log.Fatalf("failed to create customer %d: %v", i+1, err)

@@ -159,6 +159,9 @@ const docTemplate = `{
                 "middle_name": {
                     "type": "string"
                 },
+                "password": {
+                    "type": "string"
+                },
                 "phone_number": {
                     "type": "string"
                 }
@@ -192,6 +195,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "middleName": {
+                    "type": "string"
+                },
+                "password": {
                     "type": "string"
                 },
                 "phoneNumber": {
