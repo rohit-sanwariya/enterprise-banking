@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: core-banking-postgres
+  name: core-banking-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: core-banking-postgres
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        io.kompose.service: core-banking-postgres
+    spec:
+      containers:
+        - env:
+            - name: POSTGRES_DB
+              value: banking
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: POSTGRES_USER
+              value: postgres
+          image: postgres:16-alpine
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready -U postgres -d banking
+            failureThreshold: 10
+            periodSeconds: 5
+            timeoutSeconds: 5
+          name: core-banking-postgres
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgres-data
+      restartPolicy: Always
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: postgres-data

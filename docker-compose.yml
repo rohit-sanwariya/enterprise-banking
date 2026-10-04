@@ -234,11 +234,34 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      core-banking-migrate:
+        condition: service_completed_successfully
 
     networks:
       - banking
     volumes:
       - ./core-banking-service:/app
+
+
+  core-banking-migrate:
+    image: migrate/migrate
+
+    command:
+      - "-path=/migrations"
+      - "-database=postgres://postgres:postgres@postgres:5432/banking?sslmode=disable"
+      - "up"
+
+    volumes:
+      - ./core-banking-service/migrations:/migrations
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+    networks:
+      - banking
 
 
 volumes:

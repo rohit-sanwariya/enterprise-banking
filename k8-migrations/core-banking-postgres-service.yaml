@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    io.kompose.service: core-banking-postgres
+  name: core-banking-postgres
+spec:
+  ports:
+    - name: "5454"
+      port: 5454
+      targetPort: 5432
+  selector:
+    io.kompose.service: core-banking-postgres

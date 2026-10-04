@@ -74,6 +74,20 @@ services:
     networks:
       - banking
 
+  core-banking-migrate:
+    image: migrate/migrate
+    command:
+      - "-path=/migrations"
+      - "-database=postgres://postgres:postgres@core-banking-postgres:5432/banking?sslmode=disable"
+      - "up"
+    volumes:
+      - ./core-banking-service/migrations:/migrations
+    depends_on:
+      core-banking-postgres:
+        condition: service_healthy
+    networks:
+      - banking
+
   core-banking-service:
     build:
       context: ./core-banking-service
@@ -85,6 +99,8 @@ services:
     depends_on:
       core-banking-postgres:
         condition: service_healthy
+      core-banking-migrate:
+        condition: service_completed_successfully
       login-service:
         condition: service_started
     volumes:

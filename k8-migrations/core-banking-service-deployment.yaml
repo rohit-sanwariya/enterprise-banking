@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: core-banking-service
+  name: core-banking-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: core-banking-service
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        io.kompose.service: core-banking-service
+    spec:
+      containers:
+        - env:
+            - name: DATABASE_URL
+              value: postgres://postgres:postgres@core-banking-postgres:5432/banking
+            - name: LOGIN_SERVICE_URL
+              value: http://login-service:8080
+          image: core-banking-service
+          name: core-banking-service
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /app
+              name: core-banking-service-cm0
+      restartPolicy: Always
+      volumes:
+        - configMap:
+            name: core-banking-service-cm0
+          name: core-banking-service-cm0

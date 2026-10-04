@@ -1,0 +1,23 @@
+apiVersion: v1
+data:
+  000001_init.down.sql: DROP TABLE identities;
+  000001_init.up.sql: |-
+    CREATE TABLE identities (
+        id UUID PRIMARY KEY,
+        email TEXT NOT NULL UNIQUE,
+        password_hash TEXT NOT NULL,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE UNIQUE INDEX identities_email_lower_idx
+        ON identities (LOWER(email));
+  000002_add_customer_id.down.sql: |-
+    ALTER TABLE identities
+    DROP COLUMN customer_id;
+  000002_add_customer_id.up.sql: "ALTER TABLE identities \nADD COLUMN customer_id UUID NOT NULL;"
+kind: ConfigMap
+metadata:
+  labels:
+    io.kompose.service: login-migrate
+  name: login-migrate-cm0
