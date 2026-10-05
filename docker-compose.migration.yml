@@ -81,7 +81,7 @@ services:
     image: core-banking-migrate:1.0
 
     command:
-      - "-path=/migrations"
+      - "-path=/migrations" 
       - "-database=postgres://postgres:postgres@core-banking-postgres:5432/banking?sslmode=disable"
       - "up"
 
