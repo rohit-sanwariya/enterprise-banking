@@ -1,0 +1,7 @@
+apiVersion: v1
+data:
+  POSTGRES_DB: banking
+  POSTGRES_USER: postgres
+kind: ConfigMap
+metadata:
+  name: core-banking-db-config-map
