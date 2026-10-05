@@ -24,6 +24,9 @@ jobs:
           - name: notification-service
             context: ./notification-service
             file: ./notification-service/Dockerfile
+          - name: core-banking-db-migrate
+            context: ./core-banking-service
+            file: ./core-banking-service/Dockerfile.migration
 
     steps:
       - name: Checkout repository
