@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: core-db-migration
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: migrate
+          image: rohitsanwariya/core-banking-db-migrate:latest
+          command:
+            - migrate
+            - "-path=/migrations"
+            - "-database=postgres://postgres:postgres@core-db:5432/banking?sslmode=disable"
+            - "up"
