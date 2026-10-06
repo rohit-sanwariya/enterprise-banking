@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: core-banking-service
+  labels:
+    app: core-banking-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: core-banking-service
+  template:
+    metadata:
+      labels:
+        app: core-banking-service
+    spec:
+      containers:
+        - name: core-banking-service
+          image: rohitsanwariya/core-banking-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: core-banking-secret
+                  key: DATABASE_URL
+            - name: LOGIN_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: core-banking-config
+                  key: LOGIN_SERVICE_URL
